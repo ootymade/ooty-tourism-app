@@ -62,8 +62,7 @@ admin panel without an app store release.
   screens for all 5 tabs.
 - **Phase 1 (static content)** — done. Modules A (E-Pass), B (Toy Train),
   E (Travel & Connectivity), G (Food & Shopping), I (Emergency) built with
-  seed content. Module F (Trekking) is deliberately not started yet — it
-  needs the "unverified routes never render" data gate, which is Phase 4.
+  seed content.
 - **Phase 2 (Attractions Directory)** — done for the starter set. 17
   attractions across Ooty/Coonoor/Kotagiri/Masinagudi in
   `src/data/attractions.ts`, cached into SQLite on first launch
@@ -82,6 +81,18 @@ admin panel without an app store release.
   shared as a checklist; the "book a cab or guide" CTA deep-links to
   tourism.ootymade.com (a general link — the planner can't pre-fill
   that Wix form's fields without a documented way to do so).
+- **Phase 4 (Trekking verification gate)** — done. `src/data/treks.ts`
+  defines `TrekRoute` with nullable `verifiedBy`/`verifiedDate`, and
+  `getPublishedTreks()` filters out anything without both — a real code
+  constraint, not just a content rule. **No trekking route is published
+  in this app yet**: the two seed entries are intentionally left
+  unverified (trekking safety data is too high-stakes to write from
+  general knowledge), so the public Trekking screen currently shows an
+  honest "nothing verified yet" state. A `__DEV__`-only toggle previews
+  the suppressed entries, clearly marked "NOT PUBLISHED", to prove the
+  gate itself works. Someone from OotyMade needs to actually walk a route
+  and fill in `verifiedBy`/`verifiedDate`/`safetyEssentials` before
+  anything can appear here for real.
 
 Before a store submission, confirm the final app name/icon with Vijay —
 `app.json` currently uses "OotyMade — Nilgiris Trip Companion" and the

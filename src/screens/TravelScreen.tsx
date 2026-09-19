@@ -34,6 +34,12 @@ export function TravelScreen({ navigation }: Props) {
         subtitle="Airport, rail, buses, local taxis and the ghat roads"
         onPress={() => navigation.navigate('Connectivity')}
       />
+      <NavCard
+        icon="walk-outline"
+        title="Trekking"
+        subtitle="Routes we've personally verified — none guessed at"
+        onPress={() => navigation.navigate('Trekking')}
+      />
     </Screen>
   );
 }

@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TravelStackParamList } from './types';
 import { stackScreenOptions } from './screenOptions';
-import { TravelScreen, EPassScreen, ToyTrainScreen, ConnectivityScreen } from '../screens';
+import { TravelScreen, EPassScreen, ToyTrainScreen, ConnectivityScreen, TrekkingScreen } from '../screens';
 
 const Stack = createNativeStackNavigator<TravelStackParamList>();
 
@@ -16,6 +16,7 @@ export function TravelStack() {
         component={ConnectivityScreen}
         options={{ title: 'Getting Here & Around' }}
       />
+      <Stack.Screen name="Trekking" component={TrekkingScreen} options={{ title: 'Trekking' }} />
     </Stack.Navigator>
   );
 }

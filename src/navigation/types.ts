@@ -19,6 +19,7 @@ export type TravelStackParamList = {
   EPass: undefined;
   ToyTrain: undefined;
   Connectivity: undefined;
+  Trekking: undefined;
 };
 
 export type AskStackParamList = {

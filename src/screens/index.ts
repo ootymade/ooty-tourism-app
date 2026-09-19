@@ -10,3 +10,4 @@ export { EPassScreen } from './EPassScreen';
 export { ToyTrainScreen } from './ToyTrainScreen';
 export { ConnectivityScreen } from './ConnectivityScreen';
 export { AttractionDetailScreen } from './AttractionDetailScreen';
+export { TrekkingScreen } from './TrekkingScreen';

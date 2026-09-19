@@ -16,4 +16,7 @@ export type { ShoppingContent, ShoppingItem } from './shopping';
 export { attractionsContent } from './attractions';
 export type { Attraction, AttractionCategory, AttractionRegion, OpeningWindow } from './attractions';
 
+export { treksContent, getPublishedTreks } from './treks';
+export type { TrekRoute, TrekDifficulty } from './treks';
+
 export type { VerifiedContent } from './types';
