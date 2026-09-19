@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "OotyMade — Nilgiris Trip Companion",
+    "slug": "ooty-tourism-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#1E3A1A",
+    "splash": {
+      "backgroundColor": "#1E3A1A",
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ootymade.tripcompanion"
+    },
+    "android": {
+      "package": "com.ootymade.tripcompanion",
+      "adaptiveIcon": {
+        "backgroundColor": "#1E3A1A",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "backgroundColor": "#1E3A1A"
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#1E3A1A",
+          "image": "./assets/splash-icon.png",
+          "resizeMode": "contain"
+        }
+      ]
+    ]
+  }
+}
