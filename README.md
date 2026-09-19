@@ -144,7 +144,17 @@ admin panel without an app store release.
   (bilingual EN/Tamil toggle, starter prompts, graceful failure to a
   support link when the backend isn't reachable). Needs a Supabase
   project + an Anthropic API key to actually run — see "Deploying the
-  backend" below. The retrieval layer lives in the Edge Function itself
+  backend" below.
+
+  **Until then, the Ask tab runs a local "Demo mode"** (`src/lib/demoConcierge.ts`)
+  automatically — a rule-based keyword matcher over the same verified
+  content, no network call, no account needed. It's clearly labelled in
+  the UI (a banner + no pretense of real AI) and switches itself off the
+  moment `EXPO_PUBLIC_SUPABASE_URL`/`EXPO_PUBLIC_SUPABASE_ANON_KEY` are
+  set — no code change required. It exists so the chat UX can be
+  evaluated for free before committing to Anthropic billing.
+
+  The retrieval layer lives in the Edge Function itself
   (not the app), so the same function can back the WhatsApp AI Agent on
   AiSensy later without duplicating logic.
 - **Phase 6 (Polish)** — partially done; the rest needs real accounts this

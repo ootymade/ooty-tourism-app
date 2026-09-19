@@ -14,6 +14,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText, FilterChip } from '../components';
 import { askConcierge, ChatMessage, SUPPORT_URL } from '../lib/aiConcierge';
+import { askDemoConcierge } from '../lib/demoConcierge';
+import { isSupabaseConfigured } from '../lib/supabase';
 import { colors, radii, spacing } from '../theme';
 
 type Language = 'en' | 'ta';
@@ -48,6 +50,17 @@ export function AskScreen() {
     setInput('');
     setSending(true);
 
+    if (!isSupabaseConfigured) {
+      // Demo mode: answer locally, no network call, so it works before any
+      // backend is deployed. Real Supabase config switches this off
+      // automatically — see isSupabaseConfigured in lib/supabase.ts.
+      const reply = askDemoConcierge(trimmed);
+      setMessages((prev) => [...prev, { id: `${Date.now()}-assistant`, role: 'assistant', content: reply }]);
+      setSending(false);
+      requestAnimationFrame(() => listRef.current?.scrollToEnd({ animated: true }));
+      return;
+    }
+
     try {
       const { reply } = await askConcierge(trimmed, history, language);
       setMessages((prev) => [...prev, { id: `${Date.now()}-assistant`, role: 'assistant', content: reply }]);
@@ -79,6 +92,16 @@ export function AskScreen() {
           <FilterChip label="தமிழ்" selected={language === 'ta'} onPress={() => setLanguage('ta')} />
         </View>
       </View>
+
+      {!isSupabaseConfigured ? (
+        <View style={styles.demoBanner}>
+          <Ionicons name="flask-outline" size={14} color={colors.accentText} />
+          <ThemedText variant="caption" style={styles.demoBannerText}>
+            Demo mode — answering from a small offline keyword matcher, not real AI. Connect
+            Supabase + Anthropic for the real concierge.
+          </ThemedText>
+        </View>
+      ) : null}
 
       <KeyboardAvoidingView
         style={styles.flex}
@@ -209,6 +232,23 @@ const styles = StyleSheet.create({
   },
   languageRow: {
     flexDirection: 'row',
+  },
+  demoBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    marginHorizontal: spacing.md,
+    marginTop: spacing.sm,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    backgroundColor: colors.background,
+    borderRadius: radii.sm,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.accentText,
+  },
+  demoBannerText: {
+    flex: 1,
+    color: colors.accentText,
   },
   emptyState: {
     flex: 1,
