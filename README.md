@@ -72,6 +72,16 @@ admin panel without an app store release.
   spec calls for — entry fees and hours came from research this session and
   should be reconciled against Vijay's own verified numbers before this
   is treated as launch-ready content.
+- **Phase 3 (Trip Planner, rule-based)** — done. `src/lib/tripPlanner.ts`
+  sequences attractions by nearest-neighbour distance from the chosen base
+  town, respects pace (stops/day) and interests (mapped to attraction
+  categories), and deprioritises strenuous stops for senior-friendly
+  parties. No AI involved yet — deterministic and predictable, per the
+  build order (AI sequencing is layered on top of this same data in
+  Phase 5). Plans can be saved (persisted via Zustand + AsyncStorage) and
+  shared as a checklist; the "book a cab or guide" CTA deep-links to
+  tourism.ootymade.com (a general link — the planner can't pre-fill
+  that Wix form's fields without a documented way to do so).
 
 Before a store submission, confirm the final app name/icon with Vijay —
 `app.json` currently uses "OotyMade — Nilgiris Trip Companion" and the
