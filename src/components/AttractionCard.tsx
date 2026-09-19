@@ -24,7 +24,12 @@ export function AttractionCard({ attraction, onPress }: AttractionCardProps) {
   const open = isOpenNow(attraction);
 
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${attraction.name}, ${attraction.region}, ${attraction.distanceFromOotyKm} kilometres away, ${attraction.priceAdult}, ${open ? 'open now' : 'closed now'}`}
+      style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+    >
       <View style={styles.iconWrap}>
         <Ionicons name={categoryIcons[attraction.category]} size={22} color={colors.primary} />
       </View>
@@ -88,6 +93,6 @@ const styles = StyleSheet.create({
   },
   price: {
     marginTop: 2,
-    color: colors.accent,
+    color: colors.accentText,
   },
 });

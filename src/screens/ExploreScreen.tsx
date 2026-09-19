@@ -66,8 +66,18 @@ export function ExploreScreen({ navigation }: Props) {
           Explore
         </ThemedText>
         <View style={styles.viewToggle}>
-          <ToggleButton icon="list" active={viewMode === 'list'} onPress={() => setViewMode('list')} />
-          <ToggleButton icon="map" active={viewMode === 'map'} onPress={() => setViewMode('map')} />
+          <ToggleButton
+            icon="list"
+            label="List view"
+            active={viewMode === 'list'}
+            onPress={() => setViewMode('list')}
+          />
+          <ToggleButton
+            icon="map"
+            label="Map view"
+            active={viewMode === 'map'}
+            onPress={() => setViewMode('map')}
+          />
         </View>
       </View>
 
@@ -100,6 +110,7 @@ export function ExploreScreen({ navigation }: Props) {
             value={openNowOnly}
             onValueChange={setOpenNowOnly}
             trackColor={{ false: colors.border, true: colors.primary }}
+            accessibilityLabel="Show only attractions open now"
           />
         </View>
       </View>
@@ -143,16 +154,21 @@ export function ExploreScreen({ navigation }: Props) {
 
 function ToggleButton({
   icon,
+  label,
   active,
   onPress,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
+  label: string;
   active: boolean;
   onPress: () => void;
 }) {
   return (
     <Pressable
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: active }}
       style={[styles.toggleButton, { backgroundColor: active ? colors.primary : colors.surface }]}
     >
       <Ionicons name={icon} size={18} color={active ? colors.textOnPrimary : colors.textMuted} />

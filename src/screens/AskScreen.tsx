@@ -93,7 +93,13 @@ export function AskScreen() {
             </ThemedText>
             <View style={styles.starterWrap}>
               {STARTER_PROMPTS.map((prompt) => (
-                <Pressable key={prompt} style={styles.starterChip} onPress={() => sendMessage(prompt)}>
+                <Pressable
+                  key={prompt}
+                  style={styles.starterChip}
+                  onPress={() => sendMessage(prompt)}
+                  accessibilityRole="button"
+                  accessibilityLabel={prompt}
+                >
                   <ThemedText variant="caption" style={styles.starterText}>
                     {prompt}
                   </ThemedText>
@@ -135,6 +141,9 @@ export function AskScreen() {
           <Pressable
             onPress={() => sendMessage(input)}
             disabled={sending || !input.trim()}
+            accessibilityRole="button"
+            accessibilityLabel="Send message"
+            accessibilityState={{ disabled: sending || !input.trim() }}
             style={({ pressed }) => [
               styles.sendButton,
               (sending || !input.trim()) && styles.sendButtonDisabled,
@@ -164,7 +173,12 @@ function MessageBubble({ message }: { message: DisplayMessage }) {
           {message.content}
         </ThemedText>
         {message.isError ? (
-          <Pressable onPress={() => Linking.openURL(SUPPORT_URL)} style={styles.supportLink}>
+          <Pressable
+            onPress={() => Linking.openURL(SUPPORT_URL)}
+            accessibilityRole="link"
+            accessibilityLabel="Open OotyMade support"
+            style={styles.supportLink}
+          >
             <ThemedText variant="bodyMedium" style={styles.supportLinkText}>
               Open OotyMade support →
             </ThemedText>

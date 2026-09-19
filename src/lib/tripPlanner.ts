@@ -18,6 +18,8 @@ export interface PlannedStop {
   attraction: Attraction;
   arriveTime: string; // "9:00 AM"
   departTime: string; // "10:15 AM"
+  arriveHour: number; // 24h, for scheduling reminders against a real trip date
+  arriveMinute: number;
 }
 
 export interface DayPlan {
@@ -152,7 +154,13 @@ export function generateTripPlan(input: PlannerInput): TripPlan {
       const arrive = addMinutes(clock, buffer);
       const depart = addMinutes(arrive, next.visitDurationMinutes);
 
-      stops.push({ attraction: next, arriveTime: formatClock(arrive), departTime: formatClock(depart) });
+      stops.push({
+        attraction: next,
+        arriveTime: formatClock(arrive),
+        departTime: formatClock(depart),
+        arriveHour: arrive.getHours(),
+        arriveMinute: arrive.getMinutes(),
+      });
 
       clock = depart;
       currentPoint = { latitude: next.latitude, longitude: next.longitude };

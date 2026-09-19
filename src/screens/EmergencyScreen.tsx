@@ -24,6 +24,9 @@ export function EmergencyScreen() {
         <Pressable
           key={contact.number}
           onPress={() => Linking.openURL(`tel:${contact.number}`)}
+          accessibilityRole="button"
+          accessibilityLabel={`Call ${contact.label}, ${contact.number}`}
+          accessibilityHint={contact.description}
           style={({ pressed }) => [pressed && styles.pressed]}
         >
           <Card style={styles.card}>

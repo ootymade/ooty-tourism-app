@@ -46,7 +46,11 @@ export function TrekkingScreen() {
             <ThemedText variant="caption" style={styles.devLabel}>
               Dev only — preview unverified routes ({unverifiedRoutes.length})
             </ThemedText>
-            <Switch value={showUnverifiedPreview} onValueChange={setShowUnverifiedPreview} />
+            <Switch
+              value={showUnverifiedPreview}
+              onValueChange={setShowUnverifiedPreview}
+              accessibilityLabel="Preview unverified routes"
+            />
           </View>
           {showUnverifiedPreview
             ? unverifiedRoutes.map((route) => (

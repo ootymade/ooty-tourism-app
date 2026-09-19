@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Linking, Share, StyleSheet, View } from 'react-native';
+import { Linking, Share, StyleSheet, Switch, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Screen, ThemedText, Card, Button, FilterChip, Stepper } from '../components';
 import {
@@ -12,6 +12,8 @@ import {
   planToChecklistText,
 } from '../lib/tripPlanner';
 import { usePlanStore } from '../store/usePlanStore';
+import { scheduleTripReminders } from '../lib/notifications';
+import { trackEvent } from '../lib/analytics';
 import { colors, spacing } from '../theme';
 
 const PARTY_OPTIONS: { value: PartyType; label: string }[] = [
@@ -64,10 +66,25 @@ export function PlanScreen() {
   function handleGenerate() {
     const days = daysBucket === '1' ? 1 : daysBucket === '2' ? 2 : extraDays;
     setPlan(generateTripPlan({ days, party, pace, interests, base }));
+    trackEvent('trip_plan_generated', { days, party, pace, base, interestCount: interests.length });
   }
 
   async function handleShare(planToShare: TripPlan) {
     await Share.share({ message: planToChecklistText(planToShare) });
+  }
+
+  async function handleSave(planToSave: TripPlan, startInDays: number | null) {
+    let notificationIds: string[] = [];
+    let startDate: Date | null = null;
+
+    if (startInDays !== null) {
+      startDate = new Date();
+      startDate.setDate(startDate.getDate() + startInDays);
+      notificationIds = await scheduleTripReminders(planToSave, startDate);
+    }
+
+    savePlan(planToSave, startDate, notificationIds);
+    trackEvent('trip_plan_saved', { days: planToSave.days.length, reminderSet: notificationIds.length > 0 });
   }
 
   return (
@@ -95,7 +112,14 @@ export function PlanScreen() {
       </View>
       {daysBucket === '3+' ? (
         <View style={styles.stepperWrap}>
-          <Stepper value={extraDays} min={3} max={6} onChange={setExtraDays} suffix="days" />
+          <Stepper
+            value={extraDays}
+            min={3}
+            max={6}
+            onChange={setExtraDays}
+            suffix="days"
+            label="Number of days"
+          />
         </View>
       ) : null}
 
@@ -158,7 +182,7 @@ export function PlanScreen() {
       <Button label="Build my itinerary" onPress={handleGenerate} style={styles.generateButton} />
 
       {plan ? (
-        <ItineraryView plan={plan} onSave={() => savePlan(plan)} onShare={() => handleShare(plan)} />
+        <ItineraryView plan={plan} onSave={(startInDays) => handleSave(plan, startInDays)} onShare={() => handleShare(plan)} />
       ) : null}
 
       {savedPlans.length > 0 ? (
@@ -175,6 +199,10 @@ export function PlanScreen() {
                   </ThemedText>
                   <ThemedText variant="caption">
                     Saved {new Date(saved.createdAt).toLocaleDateString('en-IN')}
+                    {saved.startDate
+                      ? ` · starts ${new Date(saved.startDate).toLocaleDateString('en-IN')}`
+                      : ''}
+                    {saved.notificationIds.length > 0 ? ' · reminders set' : ''}
                   </ThemedText>
                 </View>
                 <Ionicons
@@ -182,6 +210,9 @@ export function PlanScreen() {
                   size={20}
                   color={colors.danger}
                   onPress={() => removePlan(saved.id)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Delete this saved plan"
+                  hitSlop={12}
                 />
               </View>
             </Card>
@@ -198,9 +229,22 @@ function ItineraryView({
   onShare,
 }: {
   plan: TripPlan;
-  onSave: () => void;
+  onSave: (startInDays: number | null) => Promise<void>;
   onShare: () => void;
 }) {
+  const [remindMe, setRemindMe] = useState(true);
+  const [startInDays, setStartInDays] = useState(1);
+  const [saving, setSaving] = useState(false);
+
+  async function handleSavePress() {
+    setSaving(true);
+    try {
+      await onSave(remindMe ? startInDays : null);
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <View style={styles.itinerary}>
       <ThemedText variant="subheading" style={styles.sectionTitle}>
@@ -254,8 +298,40 @@ function ItineraryView({
         ) : null}
       </Card>
 
+      <Card style={styles.dayCard}>
+        <View style={styles.reminderRow}>
+          <ThemedText variant="caption" style={styles.reminderLabel}>
+            Remind me when it's time to go
+          </ThemedText>
+          <Switch
+            value={remindMe}
+            onValueChange={setRemindMe}
+            accessibilityLabel="Remind me when it's time to go"
+          />
+        </View>
+        {remindMe ? (
+          <View style={styles.reminderStepperRow}>
+            <ThemedText variant="caption">Trip starts in</ThemedText>
+            <Stepper
+              value={startInDays}
+              min={0}
+              max={60}
+              onChange={setStartInDays}
+              suffix="days"
+              label="Trip starts in"
+            />
+          </View>
+        ) : null}
+      </Card>
+
       <View style={styles.actionRow}>
-        <Button label="Save plan" onPress={onSave} variant="outline" style={styles.actionButton} />
+        <Button
+          label={saving ? 'Saving…' : 'Save plan'}
+          onPress={handleSavePress}
+          disabled={saving}
+          variant="outline"
+          style={styles.actionButton}
+        />
         <Button label="Share" onPress={onShare} variant="outline" style={styles.actionButton} />
       </View>
 
@@ -295,6 +371,21 @@ const styles = StyleSheet.create({
   },
   dayCard: {
     marginBottom: spacing.md,
+  },
+  reminderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  reminderLabel: {
+    flex: 1,
+    marginRight: spacing.sm,
+  },
+  reminderStepperRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: spacing.sm,
   },
   dayTitle: {
     marginBottom: spacing.sm,

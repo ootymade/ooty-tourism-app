@@ -13,6 +13,8 @@ for full scope, phases and brand guidelines.
 - expo-sqlite (offline cache for the Attractions Directory)
 - react-native-maps (Explore tab map view)
 - Claude API via a Supabase Edge Function proxy (AI concierge)
+- Sentry (crash reporting) + PostHog (privacy-respecting analytics), both inert until a key is set
+- expo-notifications (local reminders for saved trip plans)
 
 ## Getting started
 
@@ -44,7 +46,7 @@ src/
   lib/           supabase client, react-query client, sqlite db, attraction utils,
                  trip planner, AI concierge client
   hooks/         React Query hooks (useAttractions)
-  store/         zustand stores
+  store/         zustand stores (saved trip plans, persisted)
 supabase/
   migrations/    SQL schema — mirrors src/data/*.ts, not yet applied to a real project
   seed.sql       the current seed content as INSERT statements
@@ -135,6 +137,43 @@ admin panel without an app store release.
   backend" below. The retrieval layer lives in the Edge Function itself
   (not the app), so the same function can back the WhatsApp AI Agent on
   AiSensy later without duplicating logic.
+- **Phase 6 (Polish)** — partially done; the rest needs real accounts this
+  session doesn't have (Sentry/PostHog projects, Apple/Google developer
+  accounts, real brand icon/splash art, a physical device or simulator to
+  test on). What's done:
+  - **Crash reporting** — `@sentry/react-native` wired in `App.tsx` via
+    `src/lib/sentry.ts`, reading `EXPO_PUBLIC_SENTRY_DSN`. Disabled (no
+    network calls) until a real DSN is set. The build-time source-map-upload
+    config plugin was deliberately *not* added to `app.json` — with no real
+    Sentry org/project it risked breaking `expo prebuild`/EAS builds for no
+    benefit; add `@sentry/react-native/expo` to `plugins` once real
+    credentials exist.
+  - **Analytics** — `posthog-react-native` wired via `src/lib/analytics.ts`,
+    reading `EXPO_PUBLIC_POSTHOG_KEY`. No client is even constructed without
+    a key, so there's no tracking of any kind out of the box. Tracks screen
+    views (via a navigation state listener) plus three product events
+    (`trip_plan_generated`, `trip_plan_saved`, `attraction_viewed`) — no PII.
+  - **Push notifications** — `expo-notifications` wired via
+    `src/lib/notifications.ts`. These are local, device-scheduled
+    notifications, not remote push, so they need no backend or account:
+    saving a plan can schedule a "trip starts today" reminder and a
+    "starts in 1 hour" reminder before the first stop, based on a
+    "starts in N days" selector in the Plan tab's save flow. Reminders are
+    cancelled automatically when a saved plan is deleted.
+  - **Accessibility** — fixed two real WCAG AA contrast failures (Heritage
+    Gold and the success green both failed as text color on cream/white;
+    added an `accentText` token and darkened `success`/`warning` slightly —
+    verified with a real luminance-ratio calculation, not eyeballed). Added
+    `accessibilityRole`/`accessibilityLabel`/`accessibilityState` to every
+    icon-only touch target across the app (list/map toggle, stepper +/-,
+    send button, delete-plan icon, etc.) — previously several icon-only
+    buttons had no accessible name at all. Confirmed font scaling isn't
+    disabled anywhere.
+  - **Not done**: push notification *certificates* (not needed — these are
+    local-only), remote analytics dashboards, app icon/splash art, store
+    listings/screenshots, TestFlight/Play internal testing, and any testing
+    on an actual device or simulator (everything here was verified via
+    `tsc --noEmit` and a full Metro bundle export, never a running app).
 
 Before a store submission, confirm the final app name/icon with Vijay —
 `app.json` currently uses "OotyMade — Nilgiris Trip Companion" and the

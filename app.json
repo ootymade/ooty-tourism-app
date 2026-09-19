@@ -43,6 +43,12 @@
           "image": "./assets/splash-icon.png",
           "resizeMode": "contain"
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#1E3A1A"
+        }
       ]
     ]
   }

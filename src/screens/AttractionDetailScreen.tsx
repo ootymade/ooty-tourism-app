@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { ActivityIndicator, Linking, StyleSheet, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -6,12 +7,19 @@ import { ExploreStackParamList } from '../navigation/types';
 import { useAttraction } from '../hooks/useAttractions';
 import { isOpenNow, formatOpeningHours, formatDuration } from '../lib/attractionUtils';
 import { attractionsContent } from '../data';
+import { trackEvent } from '../lib/analytics';
 import { colors, spacing } from '../theme';
 
 type Props = NativeStackScreenProps<ExploreStackParamList, 'AttractionDetail'>;
 
 export function AttractionDetailScreen({ route }: Props) {
   const { data: attraction, isLoading } = useAttraction(route.params.id);
+
+  useEffect(() => {
+    if (attraction) {
+      trackEvent('attraction_viewed', { id: attraction.id, category: attraction.category });
+    }
+  }, [attraction]);
 
   if (isLoading || !attraction) {
     return (

@@ -12,6 +12,9 @@ export function FilterChip({ label, selected, onPress }: FilterChipProps) {
   return (
     <Pressable
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected }}
       style={[styles.chip, selected ? styles.chipSelected : styles.chipUnselected]}
     >
       <ThemedText

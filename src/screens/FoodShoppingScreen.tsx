@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     borderColor: colors.accent,
   },
   giBadgeText: {
-    color: colors.accent,
+    color: colors.accentText,
   },
   disclosureCard: {
     marginBottom: spacing.md,

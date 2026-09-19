@@ -10,10 +10,14 @@ import { View } from 'react-native';
 import { fontsToLoad, colors } from './src/theme';
 import { queryClient } from './src/lib/queryClient';
 import { RootNavigator } from './src/navigation';
+import { initSentry, Sentry } from './src/lib/sentry';
+import { initAnalytics } from './src/lib/analytics';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
+initSentry();
+initAnalytics();
 
-export default function App() {
+function App() {
   const [fontsLoaded, fontError] = useFonts(fontsToLoad);
   const [appReady, setAppReady] = useState(false);
 
@@ -46,3 +50,5 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+
+export default Sentry.wrap(App);

@@ -14,6 +14,8 @@ export function NavCard({ icon, title, subtitle, onPress }: NavCardProps) {
   return (
     <Pressable
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${title}, ${subtitle}`}
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}
     >
       <View style={styles.icon}>

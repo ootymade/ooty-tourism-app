@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   bulletDot: {
-    color: colors.accent,
+    color: colors.accentText,
     marginRight: spacing.xs,
   },
   bulletText: {

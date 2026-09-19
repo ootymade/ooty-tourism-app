@@ -13,6 +13,9 @@ export function ExternalLinkButton({ label, url, style }: ExternalLinkButtonProp
   return (
     <Pressable
       onPress={() => Linking.openURL(url)}
+      accessibilityRole="link"
+      accessibilityLabel={label}
+      accessibilityHint="Opens in your browser"
       style={({ pressed }) => [styles.base, pressed && styles.pressed, style]}
     >
       <ThemedText variant="bodyMedium" style={styles.label}>
