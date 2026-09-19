@@ -1,9 +1,8 @@
 import { useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Switch, View } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Screen, ThemedText, FilterChip, AttractionCard } from '../components';
+import { Screen, ThemedText, FilterChip, AttractionCard, AttractionsMap } from '../components';
 import { ExploreStackParamList } from '../navigation/types';
 import { Attraction, AttractionCategory, attractionsContent } from '../data';
 import { useAttractions } from '../hooks/useAttractions';
@@ -26,13 +25,6 @@ const SORT_LABELS: Record<SortKey, string> = {
   distance: 'Nearest',
   duration: 'Quickest',
   name: 'A–Z',
-};
-
-const OOTY_REGION = {
-  latitude: 11.42,
-  longitude: 76.72,
-  latitudeDelta: 0.45,
-  longitudeDelta: 0.45,
 };
 
 export function ExploreScreen({ navigation }: Props) {
@@ -131,17 +123,7 @@ export function ExploreScreen({ navigation }: Props) {
           }
         />
       ) : (
-        <MapView style={styles.map} initialRegion={OOTY_REGION}>
-          {filtered.map((attraction) => (
-            <Marker
-              key={attraction.id}
-              coordinate={{ latitude: attraction.latitude, longitude: attraction.longitude }}
-              title={attraction.name}
-              description={`${attraction.region} · ${attraction.distanceFromOotyKm} km from Ooty`}
-              onCalloutPress={() => goToDetail(attraction)}
-            />
-          ))}
-        </MapView>
+        <AttractionsMap attractions={filtered} onPressAttraction={goToDetail} />
       )}
 
       <ThemedText variant="caption" style={styles.footerNote}>
@@ -231,12 +213,6 @@ const styles = StyleSheet.create({
   emptyText: {
     marginTop: spacing.lg,
     textAlign: 'center',
-  },
-  map: {
-    flex: 1,
-    marginHorizontal: spacing.md,
-    borderRadius: radii.md,
-    overflow: 'hidden',
   },
   footerNote: {
     textAlign: 'center',

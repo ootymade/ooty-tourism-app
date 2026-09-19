@@ -34,6 +34,16 @@ an EAS dev build) — the list view works everywhere. Android also needs a
 real Google Maps API key in `app.json` → `expo.android.config.googleMaps.apiKey`
 (currently a placeholder) before map tiles will load on that platform.
 
+**Quick visual check without installing anything on your phone:**
+`npx expo export --platform web` builds a browser version (verified working
+this session, screenshotted, and pushed) — serve the output directory with
+any static file server and open it in a browser. `react-native-maps`,
+`expo-sqlite` and the rest of the native modules have web-safe fallbacks
+(`src/components/AttractionsMap.tsx` vs. `.native.tsx`, and
+`metro.config.js` registers the `.wasm` asset extension expo-sqlite's web
+build needs) — this is a real, if secondary, supported target, not a hack.
+The web build is for previewing only; the product is the native app.
+
 ## Project layout
 
 ```
