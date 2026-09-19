@@ -15,6 +15,9 @@ export type PlanStackParamList = {
 
 export type TravelStackParamList = {
   Travel: undefined;
+  EPass: undefined;
+  ToyTrain: undefined;
+  Connectivity: undefined;
 };
 
 export type AskStackParamList = {

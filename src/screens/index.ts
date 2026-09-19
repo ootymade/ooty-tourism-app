@@ -6,3 +6,6 @@ export { AskScreen } from './AskScreen';
 export { FoodShoppingScreen } from './FoodShoppingScreen';
 export { EmergencyScreen } from './EmergencyScreen';
 export { SettingsScreen } from './SettingsScreen';
+export { EPassScreen } from './EPassScreen';
+export { ToyTrainScreen } from './ToyTrainScreen';
+export { ConnectivityScreen } from './ConnectivityScreen';
