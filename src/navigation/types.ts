@@ -7,6 +7,7 @@ export type HomeStackParamList = {
 
 export type ExploreStackParamList = {
   Explore: undefined;
+  AttractionDetail: { id: string };
 };
 
 export type PlanStackParamList = {

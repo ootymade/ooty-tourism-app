@@ -13,4 +13,7 @@ export type { EmergencyContent, EmergencyContact } from './emergency';
 export { shoppingContent } from './shopping';
 export type { ShoppingContent, ShoppingItem } from './shopping';
 
+export { attractionsContent } from './attractions';
+export type { Attraction, AttractionCategory, AttractionRegion, OpeningWindow } from './attractions';
+
 export type { VerifiedContent } from './types';
